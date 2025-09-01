@@ -1915,7 +1915,7 @@ def SMARTSTMY3(IOUT,YEAR,MONTH,DAY,HOUR, LATIT, LONGIT, ALTIT, ZONE, RHOG,
 
 def SMARTSSRRL(IOUT,YEAR,MONTH,DAY,HOUR, LATIT, LONGIT, ALTIT, ZONE, 
                W, RH, TAIR, SEASON, TDAY, SPR, TILT, WAZIM,
-               RHOG, ALPHA1, ALPHA2, OMEGL, GG, BETA, TAU5, HEIGHT='0', 
+               RHOG, ALPHA1, ALPHA2, OMEGL, GG, TAU5, HEIGHT='0', 
                material='DryGrass', min_wvl='280', max_wvl='4000', POA='TRUE'):
 
     r'''
@@ -2238,15 +2238,14 @@ def SMARTSSRRL(IOUT,YEAR,MONTH,DAY,HOUR, LATIT, LONGIT, ALTIT, ZONE,
     # 4, to read VISI on Card 9a
     # 5, to read TAU550 on Card 9a (new option).
     
-    ITURB = '1'
-    
+    ITURB = '0' #@msevillanob: I also removed BETA from inputs, since it generates a Gap in SMM for diffuse spectra
     #Card 9a Turbidity value
-    if BETA is not None:
-        BETA = BETA
-        TAU5 = ''
-    else:
-        TAU5 = TAU5
-        BETA = '' 
+    #if BETA is not None:
+        #BETA = BETA
+        #TAU5 = ''
+    #else:)
+    TAU5 = TAU5
+    BETA = '' 
     BCHUEP = '' #if ITURB == 2
     RANGE = '' #if ITURB == 3
     VISI = '' #if ITURB == 4
