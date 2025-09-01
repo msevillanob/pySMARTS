@@ -2694,7 +2694,7 @@ def _smartsAll(CMNT, ISPR, SPR, ALTIT, HEIGHT, LATIT, IATMOS, ATMOS, RH, TAIR, S
     
     ## Run SMARTS 2.9.5
     #dump = os.system('smarts295bat.exe')
-    commands = ['smarts295bat.exe', 'smarts295bat']
+    commands = ['smarts295bat.exe', 'smarts295bat.exe']
     command = None
     for cmd in commands:
         if os.path.exists(cmd):
