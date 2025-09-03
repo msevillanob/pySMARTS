@@ -529,7 +529,7 @@ def SMARTSTimeLocation(IOUT,YEAR,MONTH,DAY,HOUR, LATIT, LONGIT, ALTIT, ZONE, mat
     LIMIT = ''
     
     ## Card 14 Option for using the scanning/smoothing virtual filter of the postprocessor.
-    # The smoothed results are output on a spreadsheet-ready file, File 18 (``smarts295.scn.txt``). This postprocessor is
+    # The smoothed results are output on a spreadsheet-ready file, File 18 (``smarts299.scn.txt``). This postprocessor is
     # activated if ISCAN = 1, not if ISCAN = 0. Card 14a is read if ISCAN = 1.
     
     ISCAN = '0'
@@ -960,7 +960,7 @@ def SMARTSAirMass(IOUT, material='LiteSoil', AMASS = '1.0', min_wvl='280', max_w
     LIMIT = ''
     
     ## Card 14 Option for using the scanning/smoothing virtual filter of the postprocessor.
-    # The smoothed results are output on a spreadsheet-ready file, File 18 (``smarts295.scn.txt``). This postprocessor is
+    # The smoothed results are output on a spreadsheet-ready file, File 18 (``smarts299.scn.txt``). This postprocessor is
     # activated if ISCAN = 1, not if ISCAN = 0. Card 14a is read if ISCAN = 1.
     
     ISCAN = '0'
@@ -1381,7 +1381,7 @@ def SMARTSSpectraZenAzm(IOUT, ZENITH, AZIM, material='LiteSoil', SPR='1013.25', 
     LIMIT = ''
     
     ## Card 14 Option for using the scanning/smoothing virtual filter of the postprocessor.
-    # The smoothed results are output on a spreadsheet-ready file, File 18 (``smarts295.scn.txt``). This postprocessor is
+    # The smoothed results are output on a spreadsheet-ready file, File 18 (``smarts299.scn.txt``). This postprocessor is
     # activated if ISCAN = 1, not if ISCAN = 0. Card 14a is read if ISCAN = 1.
     
     ISCAN = '0'
@@ -1841,7 +1841,7 @@ def SMARTSTMY3(IOUT,YEAR,MONTH,DAY,HOUR, LATIT, LONGIT, ALTIT, ZONE, RHOG,
     LIMIT = ''
     
     ## Card 14 Option for using the scanning/smoothing virtual filter of the postprocessor.
-    # The smoothed results are output on a spreadsheet-ready file, File 18 (``smarts295.scn.txt``). This postprocessor is
+    # The smoothed results are output on a spreadsheet-ready file, File 18 (``smarts299.scn.txt``). This postprocessor is
     # activated if ISCAN = 1, not if ISCAN = 0. Card 14a is read if ISCAN = 1.
     
     ISCAN = '0'
@@ -2339,7 +2339,7 @@ def SMARTSSRRL(IOUT,YEAR,MONTH,DAY,HOUR, LATIT, LONGIT, ALTIT, ZONE,
     LIMIT = ''
     
     ## Card 14 Option for using the scanning/smoothing virtual filter of the postprocessor.
-    # The smoothed results are output on a spreadsheet-ready file, File 18 (smarts295.scn.txt). This postprocessor is
+    # The smoothed results are output on a spreadsheet-ready file, File 18 (smarts299.scn.txt). This postprocessor is
     # activated if ISCAN = 1, not if ISCAN = 0. Card 14a is read if ISCAN = 1.
     
     ISCAN = '0'
@@ -2438,23 +2438,23 @@ def _smartsAll(CMNT, ISPR, SPR, ALTIT, HEIGHT, LATIT, IATMOS, ATMOS, RH, TAIR, S
         os.chdir(os.environ['SMARTSPATH'])
     
     try:
-        os.remove('smarts295.inp.txt')
+        os.remove('smarts299.inp.txt')
     except:
         pass
     try:
-        os.remove('smarts295.out.txt')
+        os.remove('smarts299.out.txt')
     except:
         pass  
     try:       
-        os.remove('smarts295.ext.txt')
+        os.remove('smarts299.ext.txt')
     except:
         pass
     try:
-        os.remove('smarts295.scn.txt')
+        os.remove('smarts299.scn.txt')
     except:
         pass
         
-    f = open('smarts295.inp.txt', 'w')
+    f = open('smarts299.inp.txt', 'w')
     
     IOTOT = len(IOUT.split())
     
@@ -2692,8 +2692,9 @@ def _smartsAll(CMNT, ISPR, SPR, ALTIT, HEIGHT, LATIT, IATMOS, ATMOS, RH, TAIR, S
     f.close()
     
     ## Run SMARTS 2.9.5
-    #dump = os.system('smarts295bat.exe')
-    commands = ['smarts295bat.exe', 'smarts295bat.exe']
+    #dump = os.system('smarts299bat.exe')
+
+    commands = ['smarts299_Linux-64.exe', 'smarts299_Linux-64.exe']
     command = None
     for cmd in commands:
         if os.path.exists(cmd):
@@ -2701,6 +2702,7 @@ def _smartsAll(CMNT, ISPR, SPR, ALTIT, HEIGHT, LATIT, IATMOS, ATMOS, RH, TAIR, S
             break
 
     if not command:
+        print()
         print('Could not find SMARTS2 executable.')
         data = None
     else:
@@ -2709,22 +2711,22 @@ def _smartsAll(CMNT, ISPR, SPR, ALTIT, HEIGHT, LATIT, IATMOS, ATMOS, RH, TAIR, S
         p.wait()
         
         ## Read SMARTS 2.9.5 Output File
-        data = pd.read_csv('smarts295.ext.txt', sep=r'\s+')    
+        data = pd.read_csv('smarts299.ext.txt', sep=r'\s+')    
 
     try:
-        os.remove('smarts295.inp.txt')
+        os.remove('smarts299.inp.txt')
     except:
         pass #     print("") 
     try:
-        os.remove('smarts295.out.txt')
+        os.remove('smarts299.out.txt')
     except:
         pass #     print("")     
     try:       
-        os.remove('smarts295.ext.txt')
+        os.remove('smarts299.ext.txt')
     except:
         pass #     print("") 
     try:
-        os.remove('smarts295.scn.txt')
+        os.remove('smarts299.scn.txt')
     except:
         pass #     print("") 
     
