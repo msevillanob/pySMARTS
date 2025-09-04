@@ -493,7 +493,7 @@ def SMARTSTimeLocation(IOUT,YEAR,MONTH,DAY,HOUR, LATIT, LONGIT, ALTIT, ZONE, mat
     ApSO2 =''
     
     ## Card 7 qCO2 carbon dioxide columnar volumetric concentration (ppmv).
-    qCO2 = '0.0'
+    qCO2 = '400.0'
     
     # Card 7a ISPCTR 
     # is an option to select the proper extraterrestrial
