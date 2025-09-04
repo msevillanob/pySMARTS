@@ -92,84 +92,199 @@ def IOUT_to_code(IOUT):
 
     
 def _material_to_code(material):
-    # Comments include Description, File name(.DAT extension), Reflection, Type*, Spectral range(um), Category*
-    # *KEYS: L Lambertian, NL Non-Lambertian, SP Specular, M Manmade materials, S Soils and rocks, U User defined, V Vegetation, W Water, snow, or ice
-    material_map = { 'UsrLamb':     '0',  # User-defined spectral reflectance Albedo L Userdefined
-                     'UsrNLamb':    '1',  # User-defined spectral reflectance Albedo NL Userdefined
-                     'Water':       '2',  # Water or calm ocean (calculated) SP 0.28 4.0 W
-                     'Snow':        '3',  # Fresh dry snow Snow NL 0.3 2.48 W
-                     'Neve':        '4',  # Snow on a mountain neve Neve NL 0.45 1.65 W
-                     'Basalt':      '5',  # Basalt rock Basalt NL 0.3 2.48 S
-                     'Dry_sand':    '6',  # Dry sand Dry_sand NL 0.32 0.99 S
-                     'WiteSand':    '7',  # Sand from White Sands, NM WiteSand NL 0.5 2.48 S
-                     'Soil':        '8',  # Bare soil Soil NL 0.28 4.0 S
-                     'Dry_clay':    '9',  # Dry clay soil Dry_clay NL 0.5 2.48 S
-                     'Wet_clay':    '10', # Wet clay soil Wet_clay NL 0.5 2.48 S
-                     'Alfalfa':     '11', # Alfalfa Alfalfa NL 0.3 0.8 V
-                     'Grass':       '12', # Green grass Grass NL 0.3 1.19 V
-                     'RyeGrass':    '13', # Perennial rye grass RyeGrass NL 0.44 2.28 V
-                     'Meadow1':     '14', # Alpine meadow Meadow1 NL 0.4 0.85 V
-                     'Meadow2':     '15', # Lush meadow Meadow2 NL 0.4 0.9 V
-                     'Wheat':       '16', # Wheat crop Wheat NL 0.42 2.26 V
-                     'PineTree':    '17', # Ponderosa pine tree PineTree NL 0.34 2.48 V
-                     'Concrete':    '18', # Concrete slab Concrete NL 0.3 1.3 M
-                     'BlckLoam':    '19', # Black loam BlckLoam NL 0.4 4.0 S
-                     'BrwnLoam':    '20', # Brown loam BrwnLoam NL 0.4 4.0 S
-                     'BrwnSand':    '21', # Brown sand BrwnSand NL 0.4 4.0 S
-                     'Conifers':    '22', # Conifer trees Conifers NL 0.302 4.0 V
-                     'DarkLoam':    '23', # Dark loam DarkLoam NL 0.46-4.0 S
-                     'DarkSand':    '24', # Dark sand DarkSand NL 0.4 4.0 S
-                     'Decidous':    '25', # Decidous trees Decidous NL 0.302 4.0 V
-                     'DryGrass':    '26', # Dry grass (sod) DryGrass NL 0.38 4.0 V
-                     'DuneSand':    '27', # Dune sand DuneSand NL 0.4 4.0 S
-                     'FineSnow':    '28', # Fresh fine snow FineSnow NL 0.3 4.0 W
-                     'GrnGrass':    '29', # Green rye grass (sod) GrnGrass NL 0.302 4.0 V
-                     'GrnlSnow':    '30', # Granular snow GrnlSnow NL 0.3 4.0 W
-                     'LiteClay':    '31', # Light clay LiteClay NL 0.4 4.0 S
-                     'LiteLoam':    '32', # Light loam LiteLoam NL 0.431 4.0 S
-                     'LiteSand':    '33', # Light sand LiteSand NL 0.4 4.0 S
-                     'PaleLoam':    '34', # Pale loam PaleLoam NL 0.4 4.0 S
-                     'Seawater':    '35', # Sea water Seawater NL 2.079 4.0 W
-                     'SolidIce':    '36', # Solid ice SolidIce NL 0.3 4.0 W
-                     'Dry_Soil':    '37', # Dry soil Dry_Soil NL 0.28 4.0 S
-                     'LiteSoil':    '38', # Light soil LiteSoil NL 0.28 4.0 S
-                     'RConcrte':    '39', # Old runway concrete RConcrte NL 0.3 4.0 M
-                     'RoofTile':    '40', # Terracota roofing clay tile RoofTile NL 0.3 4.0 M
-                     'RedBrick':    '41', # Red construction brick RedBrick NL 0.3 4.0 M
-                     'Asphalt':     '42', # Old runway asphalt Asphalt NL 0.3 4.0 M
-                     'TallCorn':    '43', # Tall green corn TallCorn NL 0.36-1.0 V
-                     'SndGravl':    '44', # Sand & gravel SndGravl NL 0.45-1.04 S
-                     'Fallow':      '45', # Fallow field Fallow NL 0.32-1.19 S
-                     'Birch':       '46', # Birch leaves Birch NL 0.36-2.48 V
-                     'WetSoil':     '47', # Wet sandy soil WetSSoil NL 0.48-2.48 S
-                     'Gravel':      '48', # Gravel Gravel NL 0.32-1.3 S
-                     'WetClay2':    '49', # Wet red clay WetClay2 NL 0.52-2.48 S
-                     'WetSilt':     '50', # Wet silt WetSilt NL 0.52-2.48 S
-                     'LngGrass':    '51', # Dry long grass LngGrass NL 0.277-2.976 V
-                     'LwnGrass':    '52', # Lawn grass (generic bluegrass) LwnGrass NL 0.305-2.944 V
-                     'OakTree':     '53', # Deciduous oak tree leaves OakTree NL 0.35-2.5 V
-                     'Pinion':      '54', # Pinion pinetree needles Pinion NL 0.301-2.592 V
-                     'MeltSnow':    '55', # Melting snow (slush) MeltSnow NL 0.35-2.5 W
-                     'Plywood':     '56', # Plywood sheet (new, pine, 4-ply) Plywood NL 0.35-2.5 M
-                     'WiteVinl':    '57', # White vinyl plastic sheet, 0.15 mm WiteVinl NL 0.35-2.5 M
-                     'FibrGlss':    '58', # Clear fiberglass greenhouse roofing FibrGlss NL 0.35-2.5 M
-                     'ShtMetal':    '59', # Galvanized corrugated sheet metal, new ShtMetal NL 0.35-2.5 M
-                     'Wetland':     '60', # Wetland vegetation canopy, Yellowstone Wetland NL 0.409-2.478 V
-                     'SageBrsh':    '61', # Sagebrush canopy, Yellowstone SageBrsh NL 0.409-2.478 V
-                     'FirTrees':    '62', # Fir trees, Colorado FirTrees NL 0.353-2.592 V
-                     'CSeaWatr':    '63', # Coastal seawater, Pacific CSeaWatr NL 0.277-2.976 W
-                     'OSeaWatr':    '64', # Open ocean seawater, Atlantic OSeaWatr NL 0.277-2.976 W
-                     'GrazingField':'65', # Grazing field (unfertilized) GrazingField NL 0.401-2.499 V
-                     'Spruce':      '66'  # Young Norway spruce tree (needles) Spruce NL 0.39-0.845 V
-                }
-    
+    """
+    Converts a material name string to its corresponding SMARTS albedo code.
+    This map has been updated for SMARTS v2.9.9.
+    """
+    # Comments include Description, File name(.DAT extension), Reflection Type*, Spectral range(um), Category*
+    # *KEYS: L=Lambertian, NL=Non-Lambertian, SP=Specular, M=Manmade, S=Soils/rocks, U=User, V=Vegetation, W=Water/snow/ice, X=Mixed
+    material_map = {
+        # User-defined
+        'FixedBroadband':   '-1', # Fixed broadband albedo, [User-defined], L, N/A, U
+        'UserLamb':         '0',  # User-defined spectral reflectance, AlbedoL, L, 0.28-4.0, U
+        'UserNLamb':        '1',  # User-defined spectral reflectance, Albedo, NL, 0.28-4.0, U
+
+        # Water phases
+        'Water':            '2',  # Water or calm ocean, (calculated), SP, 0.28-4.0, W
+        'Snow':             '3',  # Fresh dry snow, Snow, NL, 0.3-2.48, W
+        'Neve':             '4',  # Snow on a mountain neve, Neve, NL, 0.45-1.65, W
+        'FineSnow':         '28', # Fresh fine snow, FineSnow, NL, 0.3-4.0, W
+        'GrnlSnow':         '30', # Granular snow, GrnlSnow, NL, 0.3-4.0, W
+        'Seawater':         '35', # Sea water, Seawater, NL, 2.08-4.0, W
+        'SolidIce':         '36', # Solid ice, SolidIce, NL, 0.3-4.0, W
+        'MeltSnow':         '55', # Melting snow (fresh), MeltSnow, NL, 0.35-2.5, W
+        'CSeaWatr':         '63', # Coastal seawater, Pacific, CSeaWatr, NL, 0.28-2.98, W
+        'OSeaWatr':         '64', # Open ocean seawater, Atlantic, OSeaWatr, NL, 0.28-2.98, W
+
+        # Vegetation
+        'Alfalfa':          '11', # Alfalfa, Alfalfa, NL, 0.3-0.8, V
+        'Grass':            '12', # Green grass, Grass, NL, 0.3-1.19, V
+        'RyeGrass':         '13', # Perennial rye grass, RyeGrass, NL, 0.44-2.28, V
+        'Meadow1':          '14', # Alpine meadow, Meadow1, NL, 0.4-0.85, V
+        'Meadow2':          '15', # Lush meadow, Meadow2, NL, 0.4-0.9, V
+        'Wheat':            '16', # Wheat crop, Wheat, NL, 0.42-2.26, V
+        'PineTree':         '17', # Ponderosa pine tree, PineTree, NL, 0.34-2.48, V
+        'Conifers':         '22', # Conifer trees, Conifers, NL, 0.302-4.0, V
+        'Decidous':         '25', # Decidous trees, Decidous, NL, 0.302-4.0, V
+        'DryGrass':         '26', # Dry grass (sod), DryGrass, NL, 0.38-4.0, V
+        'GrnGrass':         '29', # Green rye grass (sod), GrnGrass, NL, 0.302-4.0, V
+        'TallCorn':         '43', # Tall green corn, TallCorn, NL, 0.36-1.0, V
+        'Birch':            '46', # Birch leaves, Birch, NL, 0.36-2.48, V
+        'LngGrass':         '51', # Dry long grass, LngGrass, NL, 0.28-2.98, V
+        'LwnGrass':         '52', # Lawn grass (generic bluegrass), LwnGrass, NL, 0.305-2.945, V
+        'OakTree':          '53', # Deciduous oak tree leaves, OakTree, NL, 0.35-2.5, V
+        'Pinion':           '54', # Pinion pinetree needles, Pinion, NL, 0.301-2.592, V
+        'Wetland':          '60', # Wetland vegetation canopy, Yellowstone, Wetland, NL, 0.409-2.48, V
+        'SageBrsh':         '61', # Sagebrush canopy, Yellowstone, SageBrsh, NL, 0.409-2.48, V
+        'FirTrees':         '62', # Fir trees, Colorado, FirTrees, NL, 0.353-2.595, V
+        'GrazingField':     '65', # Grazing field (unfertilized), GrazingField, NL, 0.401-2.5, V
+        'Spruce':           '66', # Young Norway spruce tree (needles), Spruce, NL, 0.39-0.845, V
+        'AspenLeaves':      '67', # Aspen tree leaves, AspenLeaves, NL, 0.353-2.595, V
+        'BlueSpruce':       '70', # Blue spruce tree, BlueSpruce, NL, 0.353-2.595, V
+        'DouglasFir':       '74', # Douglas fir needles, DouglasFir, NL, 0.409-2.48, V
+        'GrassDryLong':     '76', # Dry long grass, GrassDryLong, NL, 0.28-2.98, V
+        'SagebrushDry':     '77', # Dry sagebrush, SagebrushDry, NL, 0.35-2.5, V
+        'DouglasFirForest': '78', # Douglas fir forest, DouglasFirForest, NL, 0.409-2.48, V
+        'GrassGoldenDry':   '79', # Golden dry grass, GrassGoldenDry, NL, 0.35-2.5, V
+        'SagebrushGreen':   '81', # Green sagebrush, SagebrushGreen, NL, 0.353-2.595, V
+        'JuniperBush':      '82', # Juniper bush, JuniperBush, NL, 0.353-2.595, V
+        'MapleTreeLeaves':  '84', # Maple tree leaves, MapleTreeLeaves, NL, 0.353-2.595, V
+        'WillowShrub':      '91', # Willow shrub, WillowShrub, NL, 0.409-2.48, V
+        'PurpleCactus':     '92', # Purple cactus, PurpleCactus, NL, 0.414-2.45, V
+        'AspenForest':      '100',# Aspen forest, AspenForest, NL, 0.409-2.48, V
+        'LawnGrassGreen':   '111',# Lawn grass (green), LawnGrassGreen, NL, 0.305-2.98, V
+        'OakBush':          '113',# Oak bush, OakBush, NL, 0.35-2.44, V
+
+        # Soils and rocks
+        'Basalt':           '5',  # Basalt rock, Basalt, NL, 0.3-2.48, S
+        'DrySand':          '6',  # Dry sand, Dry_sand, NL, 0.32-0.99, S
+        'WiteSand':         '7',  # Sand from White Sands, NM, WiteSand, NL, 0.5-2.48, S
+        'Soil':             '8',  # Bare soil, Soil, NL, 0.28-4.0, S
+        'DryClay':          '9',  # Dry clay soil, Dry_clay, NL, 0.5-2.48, S
+        'WetClay':          '10', # Wet clay soil, Wet_clay, NL, 0.5-2.48, S
+        'BlckLoam':         '19', # Black loam, BlckLoam, NL, 0.4-4.0, S
+        'BrwnLoam':         '20', # Brown loam, BrwnLoam, NL, 0.4-4.0, S
+        'BrwnSand':         '21', # Brown sand, BrwnSand, NL, 0.4-4.0, S
+        'DarkLoam':         '23', # Dark loam, DarkLoam, NL, 0.46-4.0, S
+        'DarkSand':         '24', # Dark sand, DarkSand, NL, 0.4-4.0, S
+        'DuneSand':         '27', # Dune sand, DuneSand, NL, 0.4-4.0, S
+        'LiteClay':         '31', # Light clay, LiteClay, NL, 0.4-4.0, S
+        'LiteLoam':         '32', # Light loam, LiteLoam, NL, 0.431-4.0, S
+        'LiteSand':         '33', # Light sand, LiteSand, NL, 0.4-4.0, S
+        'PaleLoam':         '34', # Pale loam, PaleLoam, NL, 0.4-4.0, S
+        'Dry_Soil':         '37', # Dry soil, Dry_Soil, NL, 0.28-4.0, S
+        'LiteSoil':         '38', # Light soil, LiteSoil, NL, 0.28-4.0, S
+        'SandGravel':       '44', # Sand & gravel, SandGravel, NL, 0.45-1.04, S
+        'Fallow':           '45', # Fallow field, Fallow, NL, 0.32-1.19, S
+        'WetSandySoil':     '47', # Wet sandy soil, WetSandySoil, NL, 0.48-2.48, S
+        'Gravel':           '48', # Gravel, Gravel, NL, 0.32-1.3, S
+        'WetClay2':         '49', # Wet red clay, WetClay2, NL, 0.52-2.48, S
+        'WetSilt':          '50', # Wet silt, WetSilt, NL, 0.52-2.48, S
+        'LimestoneGray':    '80', # Limestone (gray), LimestoneGray, NL, 0.4-4.0, S
+        'LimestoneWhite':   '99', # Limestone (white), LimestoneWhite, NL, 0.4-4.0, S
+        'BasaltOld':        '104',# Basalt (old), BasaltOld, NL, 0.301-2.69, S
+        'BeachSandDry':     '105',# Dry beach sand, BeachSandDry, NL, 0.35-2.425, S
+        'CalciteDolomiteMix':'108',# Calcite dolomite mix, CalciteDolomiteMix, NL, 0.35-2.5, S
+        'Pyrite':           '117',# Pyrite, Pyrite, NL, 0.28-2.98, S
+        'Quartz1':          '118',# Quartz1, Quartz1, NL, 0.35-2.5, S
+        'Quartz2':          '119',# Quartz2, Quartz2, NL, 0.28-2.98, S
+        'DesertSand':       '126',# Desert sand, DesertSand, NL, 0.28-4.0, S
+        'Limestone':        '132',# Limestone, Limestone, NL, 0.35-2.5, S
+
+        # Man-made materials
+        'Concrete':         '18', # Concrete slab, Concrete, NL, 0.3-1.3, M
+        'RunwayConcrete':   '39', # Old runway concrete, RunwayConcrete, NL, 0.3-4.0, M
+        'RoofTile':         '40', # Terracota roofing clay tile, RoofTile, NL, 0.3-4.0, M
+        'RedBrick':         '41', # Red construction brick, RedBrick, NL, 0.3-4.0, M
+        'Asphalt':          '42', # Old runway asphalt, Asphalt, NL, 0.3-4.0, M
+        'Plywood':          '56', # Plywood sheet (new, pine, 4-ply), Plywood, NL, 0.35-2.5, M
+        'WhiteVinyl':       '57', # White vinyl plastic sheet, 0.15 mm, WhiteVinyl, NL, 0.35-2.5, M
+        'FiberGlass':       '58', # Clear fiberglass greenhouse roofing, FiberGlass, NL, 0.35-2.5, M
+        'SheetMetal':       '59', # Galvanized corrugated sheet metal, new, SheetMetal, NL, 0.35-2.5, M
+        'AsphaltRoadBlackOld':'68',# Old black road asphalt, AsphaltRoadBlackOld, NL, 0.35-2.5, M
+        'RoofTarBlack':     '69', # Black roofing tar, RoofTarBlack, NL, 0.35-2.45, M
+        'PavingBrickDarkBrown':'72',# Dark brown paving brick, PavingBrickDarkBrown, NL, 0.35-2.5, M
+        'BuildingBrickDarkRed':'73',# Dark red building brick, BuildingBrickDarkRed, NL, 0.35-2.5, M
+        'BrickLightGray':   '83', # Light gray brick, BrickLightGray, NL, 0.35-2.5, M
+        'PinewoodBeamNew':  '86', # New pinewood 2x4 beam, PinewoodBeamNew, NL, 0.35-2.5, M
+        'RoofingTarPaperNew':'87',# New roofing tar paper, RoofingTarPaperNew, NL, 0.35-2.45, M
+        'AsphaltShingleOldGray':'88',# Old gray asphalt shingle, AsphaltShingleOldGray, NL, 0.3-4.0, M
+        'AsphaltShingleOldRed':'90',# Old red asphalt shingle, AsphaltShingleOldRed, NL, 0.3-4.0, M
+        'RoofingSteel':     '97', # Roofing steelplate, RoofingSteel, NL, 0.3-4.0, M
+        'PavingBrickTan':   '98', # Tan paving brick, PavingBrickTan, NL, 0.35-2.5, M
+        'AsphaltShingleDarkGray':'101',# Asphalt shingle dark gray, AsphaltShingleDarkGray, NL, 0.35-2.5, M
+        'AsphaltShingleLightGray':'102',# Asphalt shingle light gray, AsphaltShingleLightGray, NL, 0.35-2.5, M
+        'AsphaltShingleTan':'103',# Asphalt shingle tan color, AsphaltShingleTan, NL, 0.35-2.5, M
+        'BrickPavingDarkGray':'106',# Paving brick dark gray, BrickPavingDarkGray, NL, 0.35-2.5, M
+        'BuildingTyvekWhite':'107',# White Tyvek for building, BuildingTyvekWhite, NL, 0.35-2.5, M
+        'CedarShakeRoofAged':'109',# Cedar roofing (aged), CedarShakeRoofAged, NL, 0.35-2.5, M
+        'ConcreteRoadLightGray':'110',# Light gray road concrete, ConcreteRoadLightGray, NL, 0.35-2.5, M
+        'PaintedAluminumLightGray':'115',# Painted aluminium (light gray), PaintedAluminumLightGray, NL, 0.35-2.5, M
+        'ParticleBoard':    '116',# Particle board, ParticleBoard, NL, 0.35-2.5, M
+        'RoofingTarPaper':  '120',# Roofing tar paper (new), RoofingTarPaperNew, NL, 0.35-2.5, M - Note: Duplicate of 87
+        'RoofTarpGreen':    '121',# Roof tarp (green), RoofTarpGreen, NL, 0.35-2.5, M
+        'SheetMetalGutterGalvanized':'122',# Galvanized gutter sheet metal, SheetMetalGutterGalvanized, NL, 0.35-2.5, M
+        'Spectralon99WhiteLabsphere':'123',# Spectralon99 white (Labsphere), Spectralon99WhiteLabsphere, NL, 0.35-2.5, M
+        
+        # Mixed scenes
+        'ConiferMeadowMix': '71', # Conifer and meadow mix, ConiferMeadowMix, NL, 0.409-2.48, X
+        'GrassMixDryGreen': '75', # Dry and green grass mix, GrassMixDryGreen, NL, 0.28-2.98, X
+        'MeltingSnowGrassMix':'85',# Melting snow and grass mix, MeltingSnowGrassMix, NL, 0.35-2.5, X
+        'MeltingSnowSlushOld':'89',# Melting snow slush (old), MeltingSnowSlushOld, NL, 0.35-2.45, X
+        'RangeLand1':       '93', # Range Land 1, RangeLand1, NL, 0.356-2.46, X
+        'RangeLand2':       '94', # Range Land 2, RangeLand2, NL, 0.356-2.46, X
+        'RangeLand3':       '95', # Range Land 3, RangeLand3, NL, 0.356-2.46, X
+        'RedAlgaeWater':    '96', # Red algae in water, RedAlgaeWater, NL, 0.35-1.497, X
+        'MarshWaterMix':    '112',# Marsh (90%) and water (10%), Marsh+Water10%, NL, 0.35-2.5, X
+        'OiledSandDark':    '114',# Oiled dark sand, OiledSandDark, NL, 0.35-2.425, X
+        'WaterMarshEdge':   '124',# Water at marsh edge, WaterMarshEdge, NL, 0.35-2.425, X
+        'Wetland2':         '125',# Wetland 2, Wetland2.dat, NL, 0.409-2.48, X
+        'SuburbAutumn':     '127',# Suburb in autumn, SuburbAutumn, NL, 0.3-4.0, X
+        'SuburbSnow':       '128',# Suburb in winter (snow), SuburbSnow, NL, 0.3-4.0, X
+        'SuburbSummer':     '129',# Suburb in summer, SuburbSummer, NL, 0.3-4.0, X
+        'UrbanCenter':      '130',# Urban center, UrbanCenter, NL, 0.3-4.0, X
+        'UrbanCenterSnow':  '131',# Urban center (snow), UrbanCenterSnow, NL, 0.3-4.0, X
+        'MeltingSnowSlushNew':'133'# Melting snow slush (new), MeltingSnowSlushNew, NL, 0.35-2.45, X
+    }
+
     if not material:
         return material_map.keys()
     if material not in material_map:
-        print(f"Unknown material specified: '{material}'")
-        return None
+        # For backward compatibility, check some old names from previous versions
+        legacy_map = {
+            'WiteSand': 'WiteSand',
+            'Dry_sand': 'DrySand',
+            'Dry_clay': 'DryClay',
+            'Wet_clay': 'WetClay',
+            'BlckLoam': 'BlckLoam',
+            'BrwnLoam': 'BrwnLoam',
+            'BrwnSand': 'BrwnSand',
+            'DarkLoam': 'DarkLoam',
+            'DarkSand': 'DarkSand',
+            'DuneSand': 'DuneSand',
+            'LiteClay': 'LiteClay',
+            'LiteLoam': 'LiteLoam',
+            'LiteSand': 'LiteSand',
+            'PaleLoam': 'PaleLoam',
+            'Dry_Soil': 'Dry_Soil',
+            'LiteSoil': 'LiteSoil',
+            'SndGravl': 'SandGravel',
+            'WetSoil': 'WetSandySoil',
+            'WetClay2': 'WetClay2',
+            'WetSilt': 'WetSilt',
+            'RConcrte': 'RunwayConcrete',
+            'FibrGlss': 'FiberGlass',
+            'ShtMetal': 'SheetMetal',
+            'WiteVinl': 'WhiteVinyl'
+        }
+        if material in legacy_map:
+            material = legacy_map[material]
+        else:
+            print(f"Unknown material specified: '{material}'")
+            return None
     return material_map.get(material)
-
+    
+    
 def SMARTSTimeLocation(IOUT,YEAR,MONTH,DAY,HOUR, LATIT, LONGIT, ALTIT, ZONE, material='LiteSoil', min_wvl='280', max_wvl='4000'):
     r'''
     This function calculates the spectral albedo for a given material. If no 
@@ -1915,7 +2030,7 @@ def SMARTSTMY3(IOUT,YEAR,MONTH,DAY,HOUR, LATIT, LONGIT, ALTIT, ZONE, RHOG,
 
 def SMARTSSRRL(IOUT,YEAR,MONTH,DAY,HOUR, LATIT, LONGIT, ALTIT, ZONE, 
                W, RH, TAIR, SEASON, TDAY, SPR, TILT, WAZIM,
-               RHOG, ALPHA1, ALPHA2, OMEGL, GG, TAU5, HEIGHT='0', 
+               RHOG, ALPHA1, ALPHA2, OMEGL, GG, BETA, TAU5, HEIGHT='0', 
                material='DryGrass', min_wvl='280', max_wvl='4000', POA='TRUE'):
 
     r'''
@@ -2238,14 +2353,17 @@ def SMARTSSRRL(IOUT,YEAR,MONTH,DAY,HOUR, LATIT, LONGIT, ALTIT, ZONE,
     # 4, to read VISI on Card 9a
     # 5, to read TAU550 on Card 9a (new option).
     
-    ITURB = '0' #@msevillanob: I also removed BETA from inputs, since it generates a Gap in SMM for diffuse spectra
-    #Card 9a Turbidity value
-    #if BETA is not None:
-        #BETA = BETA
-        #TAU5 = ''
-    #else:)
-    TAU5 = TAU5
-    BETA = '' 
+    ITURB = '1' #@msevillanob: I also removed BETA from inputs, since it generates a Gap in SMM for diffuse spectra/
+    #However, because I want the most accurate result, I back to ITURB=1, following the original pySMARTS recomendation
+    #in its tutorial 1-Beginner - Plot Albedos from smarts.py
+
+    #Card 9a Turbidity value.
+    if BETA is not None:
+        BETA = BETA
+        TAU5 = ''
+    else:
+        TAU5 = TAU5
+        BETA = '' 
     BCHUEP = '' #if ITURB == 2
     RANGE = '' #if ITURB == 3
     VISI = '' #if ITURB == 4
