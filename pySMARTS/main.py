@@ -2460,7 +2460,7 @@ def SMARTSSRRL(IOUT,YEAR,MONTH,DAY,HOUR, LATIT, LONGIT, ALTIT, ZONE,
         # the average extraterrestrial irradiance (or solar constant, see SOLARC) is to be used, or to any
         # other number between 0.966 and 1.034 to correct it for distance if so desired.
 
-    SOLARC = '1367.0' #Solar constant
+    SOLARC = '1361.1' #Solar constant
     
     
     ## Card 12: Output results selection:
