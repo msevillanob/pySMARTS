@@ -15,6 +15,7 @@ originally coded in Matlab by Juan Russo (2001), updated and ported to python
 by Silvana Ayala (2019-2020). Original Matlab wrapper was made for graduate studies 
 at the University of Arizona, python porting by NREL. 
 
+
 Please read the license and Readme files for more information, proper use, citing, and copyrights.
     
 """
@@ -23,6 +24,7 @@ def IOUT_to_code(IOUT):
     r''' Function to display the options of outputs that SMARTS has. 
      If run without input (IOUT = None), it prints in a list all possible outputs.
      If IOUT is passed to equal one of the outputs (i.e. 
+
      (i.e. IOUT = 'Global horizontal irradiance W m-2'), it returns the
      code number for that output (returns '4' for this example).
      
@@ -35,6 +37,7 @@ def IOUT_to_code(IOUT):
      -------
      IOUT_Key: String
           Key code to SMARTS cards input.
+
 
      '''
 
@@ -287,6 +290,7 @@ def _material_to_code(material):
     
 def SMARTSTimeLocation(IOUT,YEAR,MONTH,DAY,HOUR, LATIT, LONGIT, ALTIT, ZONE, material='LiteSoil', min_wvl='280', max_wvl='4000'):
     r'''
+
     This function calculates the spectral albedo for a given material. If no 
     material is provided, the function will return a list of all valid 
     materials.
@@ -309,6 +313,7 @@ def SMARTSTimeLocation(IOUT,YEAR,MONTH,DAY,HOUR, LATIT, LONGIT, ALTIT, ZONE, mat
     HOUR : string
         Hour, in 24 hour format.
     LATIT : string
+
         Latitude of the location.
     LONGIT : string
         Longitude of the location.
@@ -323,6 +328,7 @@ def SMARTSTimeLocation(IOUT,YEAR,MONTH,DAY,HOUR, LATIT, LONGIT, ALTIT, ZONE, mat
     data : pandas
         Matrix with first column representing wavelength (in nm) and second
         column representing albedo of specified material at the wavelength
+
     
     Updates:
            6/20 Creation of second function to use zenith and azimuth M. Monarch
@@ -493,7 +499,7 @@ def SMARTSTimeLocation(IOUT,YEAR,MONTH,DAY,HOUR, LATIT, LONGIT, ALTIT, ZONE, mat
     ApSO2 =''
     
     ## Card 7 qCO2 carbon dioxide columnar volumetric concentration (ppmv).
-    qCO2 = '400.0'
+    qCO2 = '0.0'
     
     # Card 7a ISPCTR 
     # is an option to select the proper extraterrestrial
@@ -748,7 +754,10 @@ def SMARTSAirMass(IOUT, material='LiteSoil', AMASS = '1.0', min_wvl='280', max_w
         Timezone
 
 
+
+
     Returns
+
     -------
     data : pandas
         Matrix with first column representing wavelength (in nm) and second
@@ -1154,10 +1163,12 @@ def SMARTSSpectraZenAzm(IOUT, ZENITH, AZIM, material='LiteSoil', SPR='1013.25', 
 
     Parameters
     ----------
+
     material : string
         Unique identifier for ground cover. Pass None to retreive a list of
         all valid materials.
     WLMN : string
+
         Minimum wavelength to retreive
     WLMX : string
         Maximum wavelength to retreive
@@ -1171,11 +1182,13 @@ def SMARTSSpectraZenAzm(IOUT, ZENITH, AZIM, material='LiteSoil', SPR='1013.25', 
         
 
     Returns
+
     -------
     data : pandas
         Matrix with first column representing wavelength (in nm) and second
         column representing albedo of specified material at the wavelength
     
+
     Updates:
            6/20 Creation of second function to use zenith and azimuth M. Monarch
     '''
@@ -1621,10 +1634,12 @@ def SMARTSTMY3(IOUT,YEAR,MONTH,DAY,HOUR, LATIT, LONGIT, ALTIT, ZONE, RHOG,
     HEIGHT : string
         Altitude of the simulated object over the surface, in km.
     SPR : string
+
         Site pressure, in mbars.
         
     Returns
     -------
+
     data : pandas
         Matrix with first column representing wavelength (in nm) and second
         column representing albedo of specified material at the wavelength
@@ -1784,6 +1799,7 @@ def SMARTSTMY3(IOUT,YEAR,MONTH,DAY,HOUR, LATIT, LONGIT, ALTIT, ZONE, RHOG,
     # ApHNO3: Nitric acid volumetric concentration in the assumed 1-km deep tropospheric
     # pollution layer (ppmv).
     # ApNO: Nitric oxide volumetric concentration in the assumed 1-km deep tropospheric
+
     # pollution layer (ppmv).
     # ApNO2: Nitrogen dioxide volumetric concentration in the assumed 1-km deep tropospheric
     # pollution layer (ppmv).
@@ -1951,6 +1967,7 @@ def SMARTSTMY3(IOUT,YEAR,MONTH,DAY,HOUR, LATIT, LONGIT, ALTIT, ZONE, RHOG,
     ICIRC = '0'
     
     #Card 13a (if ICIRC = 1): SLOPE, APERT, LIMIT
+
     SLOPE = ''
     APERT = ''
     LIMIT = ''
@@ -2036,40 +2053,54 @@ def SMARTSSRRL(IOUT,YEAR,MONTH,DAY,HOUR, LATIT, LONGIT, ALTIT, ZONE,
     r'''
     This function calculates the spectra with inputs available on the Solar
     Radiation Research Laboratory (SRRL).  
+
     Data accessible by API or website on:
         https://midcdmz.nrel.gov/
         
+
         Main Datasets:
             SRRL Baseline Measuremnet System
+
             https://midcdmz.nrel.gov/apps/sitehome.pl?site=BMS
             
+
             SRRL AOD SkyNet Level 1.1
             http://midc.nrel.gov/apps/sitehome.pl?site=AODSRRL
             
+
             SRRL GPS-based PWV
             http://midc.nrel.gov/apps/sitehome.pl?site=PWVSRRL
+
             
 
     Parameters
+
     ----------
     YEAR : string
+
         Year
     MONTH : string
         Month
+
     DAY : string
         Day
+
     HOUR : string
         Hour, in 24 hour format.
     LATIT : string
         Latitude of the location.
     LONGIT : string
+
         Longitude of the location.
     ALTIT : string
+
         elevation of the ground surface above sea level [km].
         WARNING: Please note that TMY3 data is in meters, convert before using this
         function.
+
     ZONE : string
         Timezone
+
     W : string
         Precipitable water above the site altitude, in units of cm or equivalently
         g/cm2/
@@ -2084,26 +2115,33 @@ def SMARTSSRRL(IOUT,YEAR,MONTH,DAY,HOUR, LATIT, LONGIT, ALTIT, ZONE,
         This is, for example, SRRL_BMS['Tower Dry Bulb Temp [deg C]']
     SEASON : string
         Season, either 'WINTER' or 'SUMMER'. If Spring, use 'SUMMER'. If
+
         Autumn, use 'WINTER'.
     TDAY : string
         Average of the day's temperature.        
+
     HEIGHT : string
         Altitude of the simulated object over the surface, in km. Usually 0.
+
     SPR : string
         Site pressure, in mbars.
         This is, for example, SRRL_BMS['Station Pressure [mBar]']
     BETA : string
         Ångström’s turbidity coefficient, ß (i.e., aerosol optical depth at 1000 nm)
+
         If BETA and TAU5 are used as inputs, BETA is selected as priority since
         TAU5 would be used to calcualte an internal SMARTS BETA value.
         This is, for example, SRRL_AOD_SkyNet1['Beta']
     TAU5 : string
         Aerosol optical depth at 500 nm, τ5.
+
         If BETA and TAU5 are used as inputs, BETA is selected as priority since
         TAU5 would be used to calcualte an internal SMARTS BETA value.
+
         This is, for example, SRRL_AOD_SkyNet1['AOD [500nm]']
     TILT : string
         Tilt angel of the receiving surface (0 to 90 decimal deg.), e.g. '90.0'
+
         for a vertical plane. Use '-999' for a sun-tracking surface.
     WAZIM : string
         Surface azimuth (0 to 360 decimal deg.) counted clockwise from North;
@@ -2111,20 +2149,26 @@ def SMARTSSRRL(IOUT,YEAR,MONTH,DAY,HOUR, LATIT, LONGIT, ALTIT, ZONE,
         surface.
     RHOG : string
         Local broadband Lambertian foreground albedo (for tilted plane calculations),
+
         usually between 0.05 and 0.90.
         This is, for example, SRRL_BMS['Albedo (CMP11)']
+
     material : string
         Unique identifier for ground cover. Pass None to retrieve a list of
         all valid materials.
+
     WLMN : string
         Minimum wavelength to retreive, e.g. '280.0'
+
     WLMX : string
         Maximum wavelength to retreive, e.g. '4000'
+
 
     Returns
     -------
     data : pandas
         Matrix with first column representing wavelength (in nm) and second
+
         column representing albedo of specified material at the wavelength
     
     '''
@@ -2229,7 +2273,7 @@ def SMARTSSRRL(IOUT,YEAR,MONTH,DAY,HOUR, LATIT, LONGIT, ALTIT, ZONE,
     # If IATMOS = 0 is selected, then IH2O should be 0 or 2; IO3 and IGAS should be 0.
     # If IATMOS = 1 is selected, then IH2O, IO3, and IGAS may take any value. All user inputs
     # have precedence over the defaults.
-    IO3 = '1'
+    IO3 = '0'
 
     # Card 5a (if IO3 = 0): IALT, AbO3
     # IALT is an option to select the appropriate ozone column altitude correction.
@@ -2237,8 +2281,8 @@ def SMARTSSRRL(IOUT,YEAR,MONTH,DAY,HOUR, LATIT, LONGIT, ALTIT, ZONE,
     # Card 5a is used as is. IALT = 1 should be rather used if a vertical
     # profile correction needs to be applied (in case of an elevated site when
     # the value of AbO3 is known only at sea level). 
-    IALT = ''
-    AbO3 = ''
+    IALT = '0'
+    AbO3 = '.31'
     
     ## Card 6 IGAS is an option to define the correct conditions for gaseous absorption and atmospheric pollution. 
     # IGAS = 0 if ILOAD on Card 6a is to be read so that extra gaseous absorption calculations
@@ -2250,7 +2294,7 @@ def SMARTSSRRL(IOUT,YEAR,MONTH,DAY,HOUR, LATIT, LONGIT, ALTIT, ZONE,
     # If IATMOS = 1 is selected, then IH2O, IO3, and IGAS may take any value. All user inputs
     # have precedence over the defaults.
     
-    IGAS = '0'
+    IGAS = '1'
     
     # Card 6a  (if IGAS = 0): ILOAD is an option for tropospheric pollution, only used if IGAS = 0.
     # For ILOAD = 0, Card 6b will be read with the concentrations of 10 pollutants.
@@ -2261,7 +2305,7 @@ def SMARTSSRRL(IOUT,YEAR,MONTH,DAY,HOUR, LATIT, LONGIT, ALTIT, ZONE,
     # represent typical urban conditions: LIGHT POLLUTION (ILOAD = 2), MODERATE
     # POLLUTION (ILOAD = 3), and SEVERE POLLUTION (ILOAD = 4).
     
-    ILOAD = '1'
+    ILOAD = ''
     
     # Card 6b (if IGAS = 0 and ILOAD = 0): ApCH2O, ApCH4, ApCO, ApHNO2,
     # ApHNO3, ApNO, ApNO2, ApNO3, ApO3, ApSO2
@@ -2298,7 +2342,7 @@ def SMARTSSRRL(IOUT,YEAR,MONTH,DAY,HOUR, LATIT, LONGIT, ALTIT, ZONE,
     ApSO2 =''
     
     ## Card 7 qCO2 carbon dioxide columnar volumetric concentration (ppmv).
-    qCO2 = '0.0'
+    qCO2 = '400.0'
     
     # Card 7a ISPCTR 
     # is an option to select the proper extraterrestrial
@@ -2315,7 +2359,7 @@ def SMARTSSRRL(IOUT,YEAR,MONTH,DAY,HOUR, LATIT, LONGIT, ALTIT, ZONE,
     # 7  Spctrm_7.dat  MODTRAN2 Wehrli/WRC/WMO, 1985 1367.00
     # 8  Spctrm_8.dat  N/A ASTM E490, 2000 (synthetic) 1366.10
     
-    ISPCTR ='0'
+    ISPCTR ='9'
     
     ## Card 8: AEROS selects the aerosol model, with one of the following twelve possible choices:
     #  S&F_RURAL ,  S&F_URBAN ,  S&F_MARIT ,  S&F_TROPO , These four choices
@@ -2356,7 +2400,7 @@ def SMARTSSRRL(IOUT,YEAR,MONTH,DAY,HOUR, LATIT, LONGIT, ALTIT, ZONE,
     ITURB = '1' #@msevillanob: I also removed BETA from inputs, since it generates a Gap in SMM for diffuse spectra/
     #However, because I want the most accurate result, I back to ITURB=1, following the original pySMARTS recomendation
     #in its tutorial 1-Beginner - Plot Albedos from smarts.py
-
+    
     #Card 9a Turbidity value.
     if BETA is not None:
         BETA = BETA
@@ -2537,8 +2581,10 @@ def _smartsAll(CMNT, ISPR, SPR, ALTIT, HEIGHT, LATIT, IATMOS, ATMOS, RH, TAIR, S
     #       All variables are labeled according to the SMARTS 2.9.5 documentation.
     #       NOTICE THAT "IOTOT" is not an input variable of the function since is determined in the function 
     #       by sizing the IOUT variable.
+
     #   Outputs:
     #       data, is a matrix containing the outputs with as many rows as 
+
     #       wavelengths+1 (includes header) and as many columns as IOTOT+1 (column 1 is wavelengths)  
     #
     '''
