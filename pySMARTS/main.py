@@ -2063,7 +2063,7 @@ def SMARTSTMY3(IOUT,YEAR,MONTH,DAY,HOUR, LATIT, LONGIT, ALTIT, ZONE, RHOG,
 def SMARTSSRRL(IOUT,YEAR,MONTH,DAY,HOUR, LATIT, LONGIT, ALTIT, ZONE, 
                W, RH, TAIR, SEASON, TDAY, SPR, TILT, WAZIM,
                RHOG, ALPHA1, ALPHA2, OMEGL, GG, BETA, TAU5, HEIGHT='0', 
-               material='DryGrass', min_wvl='280', max_wvl='4000', POA=True):
+               material='DryGrass', min_wvl='280', max_wvl='4000', POA=True, AMASS_VALUE=None):
 
     r'''
     This function calculates the spectra with inputs available on the Solar
@@ -2073,13 +2073,11 @@ def SMARTSSRRL(IOUT,YEAR,MONTH,DAY,HOUR, LATIT, LONGIT, ALTIT, ZONE,
         https://midcdmz.nrel.gov/
         
 
-
         Main Datasets:
             SRRL Baseline Measuremnet System
 
             https://midcdmz.nrel.gov/apps/sitehome.pl?site=BMS
             
-
 
             SRRL AOD SkyNet Level 1.1
             http://midc.nrel.gov/apps/sitehome.pl?site=AODSRRL
@@ -2090,21 +2088,17 @@ def SMARTSSRRL(IOUT,YEAR,MONTH,DAY,HOUR, LATIT, LONGIT, ALTIT, ZONE,
 
             
 
-
     Parameters
 
     ----------
-
     YEAR : string
 
         Year
     MONTH : string
-
         Month
 
     DAY : string
         Day
-
 
     HOUR : string
         Hour, in 24 hour format.
@@ -2115,7 +2109,6 @@ def SMARTSSRRL(IOUT,YEAR,MONTH,DAY,HOUR, LATIT, LONGIT, ALTIT, ZONE,
         Longitude of the location.
     ALTIT : string
 
-
         elevation of the ground surface above sea level [km].
         WARNING: Please note that TMY3 data is in meters, convert before using this
         function.
@@ -2124,18 +2117,15 @@ def SMARTSSRRL(IOUT,YEAR,MONTH,DAY,HOUR, LATIT, LONGIT, ALTIT, ZONE,
         Timezone
 
     W : string
-
         Precipitable water above the site altitude, in units of cm or equivalently
         g/cm2/
         This is, for example, SRRL_PWD['Precipitable Water [mm]']/10
         Remember to input the correct units -- SRRL database is [mm] and this 
         function expects [cm].
-
     RH : string
         Relative Humidity.
         This is, for example, SRRL_BMS['Tower RH [%]']
     TAIR : string
-
         Temperature.
         This is, for example, SRRL_BMS['Tower Dry Bulb Temp [deg C]']
     SEASON : string
@@ -2144,7 +2134,6 @@ def SMARTSSRRL(IOUT,YEAR,MONTH,DAY,HOUR, LATIT, LONGIT, ALTIT, ZONE,
         Autumn, use 'WINTER'.
     TDAY : string
         Average of the day's temperature.        
-
 
     HEIGHT : string
         Altitude of the simulated object over the surface, in km. Usually 0.
@@ -2155,7 +2144,6 @@ def SMARTSSRRL(IOUT,YEAR,MONTH,DAY,HOUR, LATIT, LONGIT, ALTIT, ZONE,
     BETA : string
         Ångström’s turbidity coefficient, ß (i.e., aerosol optical depth at 1000 nm)
 
-
         If BETA and TAU5 are used as inputs, BETA is selected as priority since
         TAU5 would be used to calcualte an internal SMARTS BETA value.
         This is, for example, SRRL_AOD_SkyNet1['Beta']
@@ -2165,21 +2153,17 @@ def SMARTSSRRL(IOUT,YEAR,MONTH,DAY,HOUR, LATIT, LONGIT, ALTIT, ZONE,
         If BETA and TAU5 are used as inputs, BETA is selected as priority since
         TAU5 would be used to calcualte an internal SMARTS BETA value.
 
-
         This is, for example, SRRL_AOD_SkyNet1['AOD [500nm]']
     TILT : string
         Tilt angel of the receiving surface (0 to 90 decimal deg.), e.g. '90.0'
-
 
         for a vertical plane. Use '-999' for a sun-tracking surface.
     WAZIM : string
         Surface azimuth (0 to 360 decimal deg.) counted clockwise from North;
         e.g., 270 deg. for a surface facing West. Use -999 for a sun-tracking
-
         surface.
     RHOG : string
         Local broadband Lambertian foreground albedo (for tilted plane calculations),
-
 
         usually between 0.05 and 0.90.
         This is, for example, SRRL_BMS['Albedo (CMP11)']
@@ -2193,14 +2177,16 @@ def SMARTSSRRL(IOUT,YEAR,MONTH,DAY,HOUR, LATIT, LONGIT, ALTIT, ZONE,
 
     WLMX : string
         Maximum wavelength to retreive, e.g. '4000'
-
-
+        
+    AMASS_VALUE : float or None, optional # <-- CHANGE 2: Docstring Addition
+        If provided (i.e., not None), the function uses this value as the 
+        relative air mass for Card 17a (IMASS=2). Must be between 1.0 and 38.2.
+        If None (default), the solar position is calculated from date/time (IMASS=3).
 
     Returns
     -------
     data : pandas
         Matrix with first column representing wavelength (in nm) and second
-
 
         column representing albedo of specified material at the wavelength
     
@@ -2575,9 +2561,26 @@ def SMARTSSRRL(IOUT,YEAR,MONTH,DAY,HOUR, LATIT, LONGIT, ALTIT, ZONE,
     # 2, if input is to be AMASS on Card 17a
     # 3, if inputs are to be YEAR, MONTH, DAY, HOUR, LATIT, LONGIT, ZONE on Card 17a
     # 4, if inputs are to be MONTH, LATIT, DSTEP on Card 17a (for a daily calculation).
-    IMASS = '3'
-
-    
+    if AMASS_VALUE is not None:
+        try:
+            amass_float = float(AMASS_VALUE)
+            if not 1.0 <= amass_float <= 38.2:
+                print(f"Warning: AMASS value {amass_float} is outside the recommended SMARTS range (1.0 to 38.2).")
+            
+            # Set Card 17 options for Air Mass input
+            AMASS = str(amass_float)
+            IMASS = '2'
+            #print("NOTE: Solar position set using relative Air Mass (IMASS=2). Sun's azimuth defaults to 180.0 (South).")
+            
+        except ValueError:
+            print(f"Error: Could not convert provided AMASS_VALUE '{AMASS_VALUE}' to a float. Defaulting to date/time (IMASS=3).")
+            IMASS = '3'
+            AMASS = ''
+    else:
+        # Default behavior: calculate solar position from date/time
+        IMASS = '3'
+        AMASS = ''
+        
     # Card 17a: IMASS = 0 Zenith and azimuth
     ZENITH = ''
     AZIM = ''
@@ -2586,7 +2589,7 @@ def SMARTSSRRL(IOUT,YEAR,MONTH,DAY,HOUR, LATIT, LONGIT, ALTIT, ZONE,
     ELEV = ''
     
     # Card 17a: IMASS = 2 Input air mass directly
-    AMASS = ''
+    # AMASS is set in the block above
     
     # Card 17a: IMASS = 3 Input date, time and coordinates
     YEAR = YEAR
